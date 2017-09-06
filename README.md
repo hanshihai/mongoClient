@@ -5,7 +5,7 @@
 ----------------------------------
 
 ```
-java --classpath:mongo-java-driver-3.4.0.jar Main config.properties
+java -classpath ../lib/mongo-java-driver-3.4.0.jar:../lib/main.jar Main config.properties
 ```
 ----------------------------------
 
