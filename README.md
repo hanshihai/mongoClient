@@ -51,7 +51,20 @@ q (or quit exit)
 ----------------------------------
 
 
-## complie
+## compile
 ----------------------------------
+* 1. compile classes
+```
+javac -classpath ../lib/mongo-java-driver-3.4.0.jar Main.java
+```
 
+* 2. create jar
+```
+jar cvf ../lib/main.jar Main*.class
+```
+
+* 3. run
+```
+java -classpath ../lib/mongo-java-driver-3.4.0.jar:../lib/main.jar Main config.properties
+```
 ----------------------------------
