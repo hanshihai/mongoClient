@@ -70,10 +70,11 @@ java -classpath ../lib/mongo-java-driver-3.4.0.jar:../lib/main.jar Main config.p
 ```
 ----------------------------------
 
-## log store
+
+# log store
 ----------------------------------
 ```
-java -vlasspath ../lib/mongo-java-driver-3.4.0.jar:../lib/morphia-1.3.1.jar:../lib/main.jar Store config.properties
+java -classpath ../lib/mongo-java-driver-3.4.0.jar:../lib/morphia-1.3.1.jar:../lib/main.jar Store config.properties
 ```
 ----------------------------------
 
