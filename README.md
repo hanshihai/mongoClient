@@ -5,7 +5,7 @@
 ----------------------------------
 
 ```
-java -classpath ../lib/mongo-java-driver-3.4.0.jar:../lib/main.jar Main config.properties
+java -classpath ../lib/mongo-java-driver-3.4.0.jar:../lib/main.jar Main ../src/config.properties
 ```
 ----------------------------------
 
@@ -55,6 +55,7 @@ q (or quit exit)
 ----------------------------------
 * 1. compile classes
 ```
+cd src
 javac -classpath ../lib/mongo-java-driver-3.4.0.jar Main.java
 ```
 
@@ -68,3 +69,11 @@ jar cvf ../lib/main.jar Main*.class
 java -classpath ../lib/mongo-java-driver-3.4.0.jar:../lib/main.jar Main config.properties
 ```
 ----------------------------------
+
+## log store
+----------------------------------
+```
+java -vlasspath ../lib/mongo-java-driver-3.4.0.jar:../lib/morphia-1.3.1.jar:../lib/main.jar Store config.properties
+```
+----------------------------------
+
