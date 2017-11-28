@@ -11,6 +11,9 @@ import java.util.Properties;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * @author hans
+ */
 public class Main {
 
     private MongoDatabase db;
@@ -106,6 +109,28 @@ public class Main {
         System.out.println(" ----- end query -----");
     }
 
+    private void writeKeyValue(String collection, String key, String value) throws Exception{
+        System.out.println(" ----- writeKeyValue to : collection = "+ collection + "; key = " + key + "; value = " + value);
+        db.getCollection(collection).insertOne(new Document(key, value));
+        System.out.println(" ----- end writeKeyValue -----");
+    }
+
+    private void write(String collection, String json) throws Exception{
+        System.out.println(" ----- write to : collection = "+ collection + "; json = " + json);
+        db.getCollection(collection).insertOne(Document.parse(json));
+        System.out.println(" ----- end write -----");
+    }
+
+    private void delete(String collection, String key, String value) throws Exception{
+        System.out.println(" ----- delete : collection = "+ collection + "; key = " + key + "; value = " + value);
+        Document doc = db.getCollection(collection).findOneAndDelete(Filters.eq(key, value));
+        if(doc != null) {
+            System.out.println(" ----- end delete : " + doc.toJson() + " -----");
+        }else{
+            System.out.println(" ----- end delete with nothing -----");
+        }
+    }
+
     public static void printUsage() {
         System.out.println("----------- usage ------------");
         System.out.println("Start: java --classpath:mongo-java-driver-3.4.0.jar Main configFile");
@@ -115,7 +140,10 @@ public class Main {
         System.out.println("4. query collection all :             collection all");
         System.out.println("5. query collection by key-value:     collection key value");
         System.out.println("6. query collection by regex pattern: collection key pattern reg");
-        System.out.println("7. quit:                              q (or quit exit)");
+        System.out.println("7. writeKeyValue to collection:       collection key value write");
+        System.out.println("8. write json to collection:          collection json write");
+        System.out.println("9. delete collection by key-value:    collection key value delete");
+        System.out.println("10. quit:                             q (or quit exit)");
         System.out.println("----------- end ------------");
     }
 
@@ -142,7 +170,9 @@ public class Main {
             try{
                 String[] parameters = input.split(" ");
                 if(parameters.length == 1) {
-                    if("dbs".equals(parameters[0].trim())) {
+                    if("help".equalsIgnoreCase(parameters[0].trim())){
+                        printUsage();
+                    }else if("dbs".equals(parameters[0].trim())) {
                         main.listDBNames();
                     }else{
                         main.listCollections();
@@ -154,9 +184,19 @@ public class Main {
                         main.queryAll(parameters[0]);
                     }
                 }else if(parameters.length == 3){
-                    main.query(parameters[0], parameters[1], parameters[2]);
+                    if("write".equalsIgnoreCase(parameters[2])){
+                        main.write(parameters[0], parameters[1]);
+                    }else{
+                        main.query(parameters[0], parameters[1], parameters[2]);
+                    }
                 }else if(parameters.length == 4){
-                    main.queryRegex(parameters[0], parameters[1], parameters[2]);
+                    if("write".equalsIgnoreCase(parameters[3])){
+                        main.writeKeyValue(parameters[0], parameters[1], parameters[2]);
+                    }else if("delete".equalsIgnoreCase(parameters[3])){
+                        main.delete(parameters[0], parameters[1], parameters[2]);
+                    }else{
+                        main.queryRegex(parameters[0], parameters[1], parameters[2]);
+                    }
                 }else{
                     printUsage();
                 }

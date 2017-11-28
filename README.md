@@ -43,7 +43,22 @@ collection key value
 collection key pattern reg
 ```
 
-* 7. quit
+* 7. writeKeyValue to collection
+```
+collection key value writekeyvalue
+```
+
+* 8. write json to collection
+```
+collection json write
+```
+
+* 9. delete collection by key-value
+```
+collection key value delete
+```
+
+* 10. quit
 ```
 q (or quit exit)
 ```
