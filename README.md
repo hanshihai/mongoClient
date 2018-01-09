@@ -79,17 +79,17 @@ javac -source 1.7 -target 1.7 -classpath ../lib/mongo-java-driver-3.4.0.jar:../l
 jar cvf ../lib/main.jar *.class com/hpe/mcloud/imgsvcs/model/persist/*.class
 ```
 
-* 2.1 check jar file
+* 3. check jar file
 ```
 jar tvf ../lib/main.jar
 ```
 
-* 3.1 run Main
+* 4. run Main
 ```
 java -classpath ../lib/mongo-java-driver-3.4.0.jar:../lib/morphia-1.3.1.jar:../lib/main.jar Main config.properties
 ```
 
-* 3.2 run Export
+* 5. run Export
 ```
 java -classpath ../lib/mongo-java-driver-3.4.0.jar:../lib/morphia-1.3.1.jar:../lib/main.jar Export config.properties
 ```
