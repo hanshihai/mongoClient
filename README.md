@@ -71,17 +71,27 @@ q (or quit exit)
 * 1. compile classes
 ```
 cd src
-javac -classpath ../lib/mongo-java-driver-3.4.0.jar Main.java
+javac -source 1.7 -target 1.7 -classpath ../lib/mongo-java-driver-3.4.0.jar:../lib/morphia-1.3.1.jar ./Main.java ./com/hpe/mcloud/imgsvcs/model/persist/*.java ./Export.java
 ```
 
 * 2. create jar
 ```
-jar cvf ../lib/main.jar Main*.class
+jar cvf ../lib/main.jar *.class com/hpe/mcloud/imgsvcs/model/persist/*.class
 ```
 
-* 3. run
+* 2.1 check jar file
 ```
-java -classpath ../lib/mongo-java-driver-3.4.0.jar:../lib/main.jar Main config.properties
+jar tvf ../lib/main.jar
+```
+
+* 3.1 run Main
+```
+java -classpath ../lib/mongo-java-driver-3.4.0.jar:../lib/morphia-1.3.1.jar:../lib/main.jar Main config.properties
+```
+
+* 3.2 run Export
+```
+java -classpath ../lib/mongo-java-driver-3.4.0.jar:../lib/morphia-1.3.1.jar:../lib/main.jar Export config.properties
 ```
 ----------------------------------
 
