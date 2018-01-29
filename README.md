@@ -99,7 +99,7 @@ java -classpath ../lib/mongo-java-driver-3.4.0.jar:../lib/morphia-1.3.1.jar:../l
 # log store
 ----------------------------------
 ```
-java -classpath ../lib/mongo-java-driver-3.4.0.jar:../lib/morphia-1.3.1.jar:../lib/main.jar Store config.properties
+java -classpath ../lib/mongo-java-driver-3.4.0.jar:../lib/morphia-1.3.1.jar:../lib/main.jar LogStore config.properties
 ```
 ----------------------------------
 

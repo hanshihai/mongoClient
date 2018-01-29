@@ -4,6 +4,7 @@ import com.hpe.mcloud.imgsvcs.model.persist.ImageRequestJsonDao;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoDatabase;
+import dao.DBBase;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 
@@ -19,49 +20,13 @@ import java.util.Properties;
 /**
  * Created by hans on 1/9/2018.
  */
-public class Backup {
+public class Backup extends DBBase{
+
+    private int total = 0;
 
     private MongoDatabase db;
     private MongoClient client;
     private Datastore datastore;
-
-    private static String requestData = "request.json";
-    private static String indexData = "index.json";
-    private static String historyData = "history.json";
-
-    private int total = 0;
-
-    private void connect(String config) throws Exception {
-        Properties properties = new Properties();
-        properties.load(new BufferedInputStream(new FileInputStream(config)));
-        String uri = properties.getProperty("dbconnection");
-        String dbname = properties.getProperty("dbname");
-        System.out.println("loaded configuration info with dbname: " + dbname + ", and conn: " + uri);
-
-        MongoClientURI connectionURI = new MongoClientURI(uri);
-        client = new MongoClient(connectionURI);
-        db = client.getDatabase(dbname);
-        System.out.println("Connected db : " + db.getName());
-
-        Morphia morphia = new Morphia();
-        morphia.mapPackage("dao");
-        datastore = morphia.createDatastore(client, dbname);
-        datastore.ensureIndexes();
-    }
-
-    private void close() {
-        if(datastore != null) {
-            datastore = null;
-        }
-
-        if(db != null) {
-            db = null;
-        }
-
-        if(client != null) {
-            client.close();
-        }
-    }
 
     public void writeData(Path path, String fileName, String data) throws IOException {
         File file = path.resolve(fileName).toFile();

@@ -3,9 +3,6 @@ import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoDatabase;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Property;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -22,7 +19,7 @@ import dao.*;
 /**
  * Created by hans on 2017/9/20.
  */
-public class Store {
+public class LogStore {
 
     public final static String DEFAULT_STAGE_PATTERN = "(\\D*)([^\\]]*)([^-]*)([-]{1})(.*)using\\s(\\d*)";
 
@@ -104,7 +101,7 @@ public class Store {
             configFile = args[0];
         }
 
-        Store store = new Store();
+        LogStore store = new LogStore();
         try{
             store.connect(configFile);
         }catch(Exception e) {
