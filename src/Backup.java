@@ -24,10 +24,6 @@ public class Backup extends DBBase{
 
     private int total = 0;
 
-    private MongoDatabase db;
-    private MongoClient client;
-    private Datastore datastore;
-
     public void writeData(Path path, String fileName, String data) throws IOException {
         File file = path.resolve(fileName).toFile();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))){

@@ -5,6 +5,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.WriteResult;
 import com.mongodb.client.MongoDatabase;
+import dao.DBBase;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.query.Query;
@@ -18,43 +19,7 @@ import java.util.Scanner;
 /**
  * Created by hans on 1/9/2018.
  */
-public class Clear {
-
-    private MongoDatabase db;
-    private MongoClient client;
-    private Datastore datastore;
-
-    private void connect(String config) throws Exception {
-        Properties properties = new Properties();
-        properties.load(new BufferedInputStream(new FileInputStream(config)));
-        String uri = properties.getProperty("dbconnection");
-        String dbname = properties.getProperty("dbname");
-        System.out.println("loaded configuration info with dbname: " + dbname + ", and conn: " + uri);
-
-        MongoClientURI connectionURI = new MongoClientURI(uri);
-        client = new MongoClient(connectionURI);
-        db = client.getDatabase(dbname);
-        System.out.println("Connected db : " + db.getName());
-
-        Morphia morphia = new Morphia();
-        morphia.mapPackage("dao");
-        datastore = morphia.createDatastore(client, dbname);
-        datastore.ensureIndexes();
-    }
-
-    private void close() {
-        if(datastore != null) {
-            datastore = null;
-        }
-
-        if(db != null) {
-            db = null;
-        }
-
-        if(client != null) {
-            client.close();
-        }
-    }
+public class Clear extends DBBase{
 
     public void deleteImageIndexByKey(String id, String orgId) {
         WriteResult result =  datastore.delete(datastore.createQuery(ImageIndexJsonDao.class).field("id").equal(id).field("orgId").equal(orgId));

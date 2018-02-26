@@ -4,6 +4,7 @@ import com.mongodb.client.MongoDatabase;
 import com.hpe.mcloud.imgsvcs.model.persist.ImageHistoryJsonDao;
 import com.hpe.mcloud.imgsvcs.model.persist.ImageIndexJsonDao;
 import com.hpe.mcloud.imgsvcs.model.persist.ImageRequestJsonDao;
+import dao.DBBase;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 
@@ -15,43 +16,7 @@ import java.util.Properties;
 /**
  * Created by hans on 1/9/2018.
  */
-public class Export {
-
-    private MongoDatabase db;
-    private MongoClient client;
-    private Datastore datastore;
-
-    private void connect(String config) throws Exception {
-        Properties properties = new Properties();
-        properties.load(new BufferedInputStream(new FileInputStream(config)));
-        String uri = properties.getProperty("dbconnection");
-        String dbname = properties.getProperty("dbname");
-        System.out.println("loaded configuration info with dbname: " + dbname + ", and conn: " + uri);
-
-        MongoClientURI connectionURI = new MongoClientURI(uri);
-        client = new MongoClient(connectionURI);
-        db = client.getDatabase(dbname);
-        System.out.println("Connected db : " + db.getName());
-
-        Morphia morphia = new Morphia();
-        morphia.mapPackage("dao");
-        datastore = morphia.createDatastore(client, dbname);
-        datastore.ensureIndexes();
-    }
-
-    private void close() {
-        if(datastore != null) {
-            datastore = null;
-        }
-
-        if(db != null) {
-            db = null;
-        }
-
-        if(client != null) {
-            client.close();
-        }
-    }
+public class Export extends DBBase{
 
     private void export() {
         List<ImageRequestJsonDao> requestList = datastore.createQuery(ImageRequestJsonDao.class).asList();
