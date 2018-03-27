@@ -1,15 +1,21 @@
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.bson.Document;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-import org.bson.Document;
-
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.util.Properties;
-import java.util.Scanner;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.mongodb.client.model.FindOneAndUpdateOptions;
+import com.mongodb.client.model.ReturnDocument;
 
 /**
  * @author hans
@@ -130,7 +136,68 @@ public class Main {
             System.out.println(" ----- end delete with nothing -----");
         }
     }
+  
+	private void update(String collection, String key, String value, String update_key, String original_value,
+			String new_value) throws Exception {
+		System.out.println(" ----- update : collection = " + collection + "; key = " + key + "; value = " + value);
+		Document doc;
+		if (update_key.indexOf(".") != -1) {
+			String[] parts = update_key.split("\\.");
+			String part1 = parts[0];
+			String part2 = parts[parts.length - 1];
+			Document docv = db.getCollection(collection).find(Filters.eq(key, value)).first();
+			JSONObject object = new JSONObject(docv.toJson());
+			String va = object.getString(part1);
+			JSONObject value_json = new JSONObject(va);
+			JSONObject test = function(value_json, part2, original_value, new_value);
+			String testString = test.toString();
+			doc = db.getCollection(collection).findOneAndUpdate(Filters.eq(key, value),
+					new Document("$set", new Document(part1, testString)),
+					new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER));
 
+		} else {
+			doc = db.getCollection(collection).findOneAndUpdate(Filters.eq(key, value),
+					new Document("$set", new Document(update_key, new_value)),
+					new FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER));
+		}
+		if (doc != null) {
+			System.out.println(" ----- end update : " + doc.toJson() + " -----");
+		} else {
+			System.out.println(" ----- end update with nothing -----");
+		}
+	}
+    
+    public  JSONObject function(JSONObject obj, String keyMain, String valueMain, String newValue) throws Exception {
+        // We need to know keys of Jsonobject
+        Iterator iterator = obj.keys();
+        String key = null;
+        while (iterator.hasNext()) {
+            key = (String) iterator.next();
+            // if object is just string we change value in key
+            if ((obj.optJSONArray(key)==null) && (obj.optJSONObject(key)==null)) {
+                if ((key.equals(keyMain)) && (obj.get(key).toString().equals(valueMain))) {
+                    // put new value
+                    obj.put(key, newValue);
+                    return obj;
+                }
+            }
+
+            // if it's jsonobject
+            if (obj.optJSONObject(key) != null) {
+                function(obj.getJSONObject(key), keyMain, valueMain, newValue);
+            }
+
+            // if it's jsonarray
+            if (obj.optJSONArray(key) != null) {
+                JSONArray jArray = obj.getJSONArray(key);
+                for (int i=0;i<jArray.length();i++) {
+                	if(!jArray.get(i).getClass().isArray()) continue;
+                    function(jArray.getJSONObject(i), keyMain, valueMain, newValue);
+                }
+            }
+        }
+        return obj;
+    }
     public static void printUsage() {
         System.out.println("----------- usage ------------");
         System.out.println("Start: java --classpath:mongo-java-driver-3.4.0.jar Main configFile");
@@ -143,7 +210,10 @@ public class Main {
         System.out.println("7. writeKeyValue to collection:       collection key value write");
         System.out.println("8. write json to collection:          collection json write");
         System.out.println("9. delete collection by key-value:    collection key value delete");
-        System.out.println("10. quit:                             q (or quit exit)");
+        System.out.println("10. update collection by key-value:   collection key value update_key original_value new_value update"+
+        		            "eg1:ImageIndexJsonDao _id 9511753c79164bbeb5872089f88e4f2c orgId 456 update"+
+                            " eg2:ImageIndexJsonDao _id 9511753c79164bbeb5872089f88e4f2c value.jbilling_status CREATE deleted update");
+        System.out.println("11. quit:                             q (or quit exit)");
         System.out.println("----------- end ------------");
     }
 
@@ -197,6 +267,10 @@ public class Main {
                     }else{
                         main.queryRegex(parameters[0], parameters[1], parameters[2]);
                     }
+                }else if(parameters.length == 7){
+                	if("update".equalsIgnoreCase(parameters[6])){
+                		main.update(parameters[0], parameters[1], parameters[2], parameters[3],parameters[4],parameters[5]);
+                	}
                 }else{
                     printUsage();
                 }
