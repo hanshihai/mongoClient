@@ -3,6 +3,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.result.DeleteResult;
 import org.bson.Document;
 
 import java.io.BufferedInputStream;
@@ -131,6 +132,12 @@ public class Main {
         }
     }
 
+    private void deleteMany(String collection, String key, String value) throws Exception {
+        System.out.println(" ----- deleteMany : collection = "+ collection + "; key = " + key + "; value = " + value);
+        DeleteResult result  = db.getCollection(collection).deleteMany(Filters.eq(key, value));
+        System.out.println("Total docs " + result.getDeletedCount() + " has been deleted.");
+    }
+
     public static void printUsage() {
         System.out.println("----------- usage ------------");
         System.out.println("Start: java --classpath:mongo-java-driver-3.4.0.jar Main configFile");
@@ -143,7 +150,8 @@ public class Main {
         System.out.println("7. writeKeyValue to collection:       collection key value write");
         System.out.println("8. write json to collection:          collection json write");
         System.out.println("9. delete collection by key-value:    collection key value delete");
-        System.out.println("10. quit:                             q (or quit exit)");
+        System.out.println("10. delete many collections by key-value:    collection key value deletemore");
+        System.out.println("100. quit:                             q (or quit exit)");
         System.out.println("----------- end ------------");
     }
 
@@ -194,6 +202,8 @@ public class Main {
                         main.writeKeyValue(parameters[0], parameters[1], parameters[2]);
                     }else if("delete".equalsIgnoreCase(parameters[3])){
                         main.delete(parameters[0], parameters[1], parameters[2]);
+                    }else if("deletemore".equalsIgnoreCase(parameters[3])){
+                        main.deleteMany(parameters[0], parameters[1], parameters[2]);
                     }else{
                         main.queryRegex(parameters[0], parameters[1], parameters[2]);
                     }
