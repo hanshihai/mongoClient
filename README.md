@@ -58,7 +58,17 @@ collection json write
 collection key value delete
 ```
 
-* 10. quit
+* 10. delete collection more rows by key-value
+```
+collection key value deletemore 
+```
+
+* 11. update collection by key from value to new value
+```
+collection key value update_key old-value new-value update
+```
+
+* 100. quit
 ```
 q (or quit exit)
 ```
@@ -71,7 +81,12 @@ q (or quit exit)
 * 1. compile classes
 ```
 cd src
-javac -source 1.7 -target 1.7 -classpath ../lib/mongo-java-driver-3.4.0.jar:../lib/morphia-1.3.1.jar ./Main.java ./com/hpe/mcloud/imgsvcs/model/persist/*.java ./Export.java
+javac -source 1.7 -target 1.7 -classpath ../lib/mongo-java-driver-3.4.0.jar:../lib/morphia-1.3.1.jar:../lib/json-20090211.jar ./Main.java ./com/hpe/mcloud/imgsvcs/model/persist/*.java ./Export.java ./Clear.java
+```
+or with default 1.8 jdk
+```
+cd src
+javac -classpath ../lib/mongo-java-driver-3.4.0.jar:../lib/morphia-1.3.1.jar:../lib/json-20090211.jar ./Main.java ./com/hpe/mcloud/imgsvcs/model/persist/*.java ./Clear.java ./Export.java
 ```
 
 * 2. create jar
@@ -86,12 +101,12 @@ jar tvf ../lib/main.jar
 
 * 4. run Main
 ```
-java -classpath ../lib/mongo-java-driver-3.4.0.jar:../lib/morphia-1.3.1.jar:../lib/main.jar Main config.properties
+java -classpath ../lib/mongo-java-driver-3.4.0.jar:../lib/morphia-1.3.1.jar:../lib/json-20090211.jar:../lib/main.jar Main config.properties
 ```
 
 * 5. run Export
 ```
-java -classpath ../lib/mongo-java-driver-3.4.0.jar:../lib/morphia-1.3.1.jar:../lib/main.jar Export config.properties
+java -classpath ../lib/mongo-java-driver-3.4.0.jar:../lib/morphia-1.3.1.jar:../lib/json-20090211.jar:../lib/main.jar Export config.properties
 ```
 ----------------------------------
 
